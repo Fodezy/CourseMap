@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-fastapi}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-fastapi}
+      POSTGRES_DB: ${POSTGRES_DB:-appdb}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  etl: #app
+    build:
+      context: ./etl
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    environment:
+      # SQLModel / SQLAlchemy style URL
+      DATABASE_URL: postgres://${POSTGRES_USER:-fastapi}:${POSTGRES_PASSWORD:-fastapi}@db:5432/${POSTGRES_DB:-appdb}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./etl:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    networks:
+      - app-network
+
+# Uncomment and customize in Sprint 6 when you add Prefect or Airflow
+#  orchestrator:
+#    image: prefecthq/prefect:latest
+#    ...
+
+volumes:
+  db_data:
+
+networks:
+  app-network:
