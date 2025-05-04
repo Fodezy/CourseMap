@@ -1,0 +1,146 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Course",
+  "type": "object",
+  "definitions": {
+    "MeetingTime": {
+      "type": "object",
+      "properties": {
+        "section": {
+          "type": "integer",
+          "description": "Section number"
+        },
+        "term": {
+          "type": "string",
+          "enum": ["a", "b"],
+          "description": "Semester code: 'a'=Fall; 'b'=Winter"
+        },
+        "day": {
+          "type": "string",
+          "description": "Day(s) of the week (e.g., 'MW', 'TUTH')"
+        },
+        "startTime": {
+          "type": "string",
+          "pattern": "^([01]?[0-9]|2[0-3]):[0-5][0-9]$",
+          "description": "Start time in 24‑hour HH:MM"
+        },
+        "endTime": {
+          "type": "string",
+          "pattern": "^([01]?[0-9]|2[0-3]):[0-5][0-9]$",
+          "description": "End time in 24‑hour HH:MM"
+        }
+      },
+      "required": ["section", "term", "day", "startTime", "endTime"]
+    }
+  },
+  "properties": {
+    "courseID": {
+      "type": "string",
+      "pattern": "^[A-Z]{2,}[0-9]{3,4}(a|b|ab)?$",
+      "description": "Unique code with semester letter (e.g. 'ACCT1200a', 'MATH210b', 'HIST101ab')"
+    },
+    "title": {
+      "type": "string",
+      "description": "Full course name"
+    },
+    "description": {
+      "type": "string",
+      "description": "Catalog-style summary"
+    },
+    "department": {
+      "type": "string",
+      "description": "Owning department or faculty"
+    },
+    "level": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Course level (e.g. 100, 200, 300)"
+    },
+    "credits": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Credit value"
+    },
+    "lectureHours": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Weekly lecture/tutorial/seminar hours"
+    },
+    "labHours": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Weekly lab or other activity hours"
+    },
+    "requirementType": {
+      "type": "string",
+      "description": "e.g. core, elective, etc."
+    },
+    "programCodes": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Programs for which this counts"
+    },
+    "prerequisites": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Course IDs required before enrollment"
+    },
+    "corequisites": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Course IDs taken concurrently"
+    },
+    "termsOffered": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["a", "b", "ab", ""],
+        "description": "Semester code: ‘a’=Fall; ‘b’=Winter; ‘ab’=one‑semester any term; ''=two‑semester"
+      },
+      "description": "Letter codes indicating when the course is offered"
+    },
+    "meetingTimes": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/MeetingTime" },
+      "description": "Meeting schedule blocks, including section and term"
+    },
+    "location": {
+      "type": "string",
+      "description": "Building/room or 'Online'"
+    },
+    "capacity": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Max enrollment"
+    },
+    "instructors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "email": { "type": "string", "format": "email" },
+          "role": { "type": "string" }
+        },
+        "required": ["name", "email"]
+      },
+      "description": "List of instructors"
+    },
+    "syllabusURL": {
+      "type": "string",
+      "format": "uri",
+      "description": "Link to full syllabus"
+    },
+    "restrictedTo": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Program codes or groups NOT permitted"
+    }
+  },
+  "required": [
+    "courseID",
+    "title",
+    "credits",
+    "syllabusURL"
+  ]
+}

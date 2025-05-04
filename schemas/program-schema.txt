@@ -1,0 +1,65 @@
+{
+  "$schema": "http://json-schema.org/draft/2020-12/schema#",
+  "title": "Program",
+  "type": "object",
+  "properties": {
+    "code": {
+      "type": "string",
+      "description": "Unique program identifier (e.g., 'MAJBSS')."
+    },
+    "name": {
+      "type": "string",
+      "description": "Full program name."
+    },
+	"programLevel": {
+		"type": "string",
+		"description": "Program Type (e.g., 'Major' or 'Minor')."
+	},	
+    "degreeType": {
+      "type": "string",
+      "description": "Degree awarded (e.g., 'Bachelor of Arts', 'Bachelor of Business Administration')."
+    },
+    "totalCredits": {
+      "type": "integer",
+      "description": "Total credits required to complete the program."
+    },
+    "creditBreakdown": {
+      "type": "object",
+      "properties": {
+        "coreCredits": { "type": "integer" },
+        "requiredCredits": { "type": "integer" },
+        "optionalCredits": { "type": "integer" },
+        "electiveCredits": { "type": "integer" },
+        "nonBusinessElectiveMin": { "type": "integer" }
+      },
+      "required": ["coreCredits","electiveCredits"]
+    },
+    "description": {
+      "type": "string",
+      "description": "Short program overview or purpose."
+    },
+    "requiredCourses": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "List of course IDs required in the core."
+    },
+    "prerequisiteMap": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": { "type": "string" }
+      },
+      "description": "Map of courseID → array of courseIDs required as prerequisites."
+    },
+    "corequisiteMap": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": { "type": "string" }
+      },
+      "description": "Map of courseID → array of courseIDs required as corequisites."
+    },
+    "notes": { "type": "string" }
+  },
+  "required": ["code","name","degreeType","totalCredits","creditBreakdown","requiredCourses"]
+}

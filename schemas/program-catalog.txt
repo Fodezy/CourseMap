@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft/2020-12/schema#",
+  "title": "ProgramCatalog",
+  "type": "object",
+  "properties": {
+    "programs": {
+      "type": "array",
+      "items": { "$ref": "program-schema.json#" },
+      "description": "An array of all Program definitions (majors and minors)."
+    }
+  },
+  "required": ["programs"]
+}

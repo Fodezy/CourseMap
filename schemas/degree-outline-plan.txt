@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft/2020-12/schema#",
+  "title": "DegreePlan",
+  "type": "object",
+  "properties": {
+    "programName": {
+      "type": "string",
+      "description": "Full name of the degree or program (e.g., 'B.A. Business Administration')."
+    },
+    "programType": {
+      "type": "string",
+      "description": "Program category (e.g., 'Major', 'Minor', 'Combined')."
+    },
+    "programCatalog": {
+      "$ref": "programcatalog-schema.json#",
+      "description": "Catalog of all available majors and minors."
+    },
+    "courseCatalog": {
+      "$ref": "coursecatalog-schema.json#",
+      "description": "Catalog of all available courses."
+    },
+    "majors": {
+      "type": "array",
+      "items": { "$ref": "program-schema.json#" },
+      "description": "Selected Program objects for each major in this plan."
+    },
+    "minors": {
+      "type": "array",
+      "items": { "$ref": "program-schema.json#" },
+      "description": "Selected Program objects for each minor in this plan."
+    },
+    "semesters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "term": {
+            "type": "string",
+            "enum": ["a","b","ab",""],
+            "description": "Semester code (a=Fall, b=Winter, c=Spring/Summer1, d=Summer2)."
+          },
+          "year": {
+            "type": "integer",
+            "description": "Calendar year of the semester."
+          },
+          "courses": {
+            "type": "array",
+            "items": { "$ref": "course_schema.json#" },
+            "description": "Courses scheduled for this term."
+          }
+        },
+        "required": ["term","year","courses"]
+      }
+    }
+  },
+  "required": ["programName","programType","majors","semesters"]
+}

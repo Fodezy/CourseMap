@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft/2020-12/schema#",
+  "title": "CourseCatalog",
+  "type": "object",
+  "properties": {
+    "courses": {
+      "type": "array",
+      "items": { "$ref": "course_schema.json#" },
+      "description": "An array of all course definitions in the catalog."
+    }
+  },
+  "required": ["courses"]
+}
