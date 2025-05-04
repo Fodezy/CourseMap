@@ -1,23 +1,4 @@
-name: CI - Lint & Test
-
-# ←— Define when to run the workflow
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
-
-jobs:
-  lint:
-    name: 🧹 Lint
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Pythonname: CI – Lint & Test
+name: CI – Lint & Test
 
 on:
   push:
@@ -29,13 +10,10 @@ on:
 
 jobs:
   lint:
-    name: 🧹 Lint
+    name: Lint Code
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: etl    # run all commands from etl/
     steps:
-      - name: Checkout code
+      - name: Checkout repo
         uses: actions/checkout@v3
 
       - name: Set up Python
@@ -48,8 +26,6 @@ jobs:
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('etl/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
 
       - name: Install linters
         run: |
@@ -57,27 +33,23 @@ jobs:
           pip install black isort flake8 mypy
 
       - name: Black check
-        run: black --check app/
+        run: black --check etl/app
 
       - name: isort check
-        run: isort --check-only app/
+        run: isort --check-only etl/app
 
       - name: Flake8
-        run: flake8 app/
+        run: flake8 etl/app
 
       - name: Mypy
-        run: mypy app/
-
+        run: mypy etl/app
 
   test:
-    name: 🧪 Test
+    name: Run Tests
     needs: lint
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: etl    # same here
     steps:
-      - name: Checkout code
+      - name: Checkout repo
         uses: actions/checkout@v3
 
       - name: Set up Python
@@ -90,87 +62,19 @@ jobs:
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('etl/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
 
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r etl/requirements.txt
           pip install pytest pytest-cov
 
-      - name: Run tests
-        run: pytest --cov=app/
+      - name: Run pytest
+        run: pytest --cov=etl/app
 
       - name: Upload coverage report
         if: success()
         uses: actions/upload-artifact@v3
         with:
           name: coverage-report
-          path: htmlcov/
-
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-
-      - name: Cache pip
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-
-      - name: Install linters
-        run: |
-          pip install --upgrade pip
-          pip install black isort flake8 mypy
-
-      - name: Black check
-        run: black --check .
-
-      - name: isort check
-        run: isort --check-only .
-
-      - name: Flake8
-        run: flake8 .
-
-      - name: Mypy
-        run: mypy app/
-
-  test:
-    name: 🧪 Test
-    needs: lint
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-
-      - name: Cache pip
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-
-      - name: Install dependencies
-        run: |
-          pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install pytest pytest-cov
-
-      - name: Run tests
-        run: pytest --cov=.
-
-      - name: Upload coverage (optional)
-        if: success()
-        uses: actions/upload-artifact@v3
-        with:
-          name: coverage-report
-          path: htmlcov/
+          path: htmlcov
