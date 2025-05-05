@@ -45,36 +45,36 @@ jobs:
         run: mypy etl/app
 
     test:
-    name: Run Tests
-    needs: lint
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
+      name: Run Tests
+      needs: lint
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout repo
+          uses: actions/checkout@v3
 
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
+        - name: Set up Python 3.11
+          uses: actions/setup-python@v4
+          with:
+            python-version: '3.11'
 
-      - name: Cache pip
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('etl/requirements.txt') }}
+        - name: Cache pip
+          uses: actions/cache@v3
+          with:
+            path: ~/.cache/pip
+            key: ${{ runner.os }}-pip-${{ hashFiles('etl/requirements.txt') }}
 
-      - name: Install test dependencies
-        run: |
-          pip install --upgrade pip
-          pip install -r etl/requirements.txt
-          pip install pytest pytest-cov
+        - name: Install test dependencies
+          run: |
+            pip install --upgrade pip
+            pip install -r etl/requirements.txt
+            pip install pytest pytest-cov
 
-      - name: Run pytest
-        run: pytest --cov=etl/app
+        - name: Run pytest
+          run: pytest --cov=etl/app
 
-      - name: Upload coverage report
-        if: ${{ success() }}
-        uses: actions/upload-artifact@v3
-        with:
-          name: coverage-report
-          path: htmlcov
+        - name: Upload coverage report
+          if: ${{ success() }}
+          uses: actions/upload-artifact@v3
+          with:
+            name: coverage-report
+            path: htmlcov
