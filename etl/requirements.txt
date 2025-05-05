@@ -5,3 +5,4 @@ sqlmodel
 jsonschema
 pdfminer.six
 camelot-py
+httpx
